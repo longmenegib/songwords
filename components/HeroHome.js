@@ -22,36 +22,39 @@ function HeroHome() {
         });
         const data = await response.json();
         if (data.success) {
-            let size = 64;
+            let size = 32;
             if (data.completion.length > 84) {
                 size = 32
             }
             setGenerated(`https://textoverimage.moesif.com/image?image_url=${encodeURIComponent(data.response)}&overlay_color=0000007f&text=${data.completion}&text_size=${size}&y_align=middle&x_align=center`);
             setLoading(false);
 
-            const canvas = canvasRef.current;
-            let x = canvas.width / 2;
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-            img.src = `https://textoverimage.moesif.com/image?image_url=${encodeURIComponent(data.response)}&overlay_color=0000007f&text=${data.completion}&text_size=${size}&y_align=middle&x_align=center`;
-            img.addEventListener('load', () => {
-                ctx.drawImage(img, 0, 0);
-                ctx.font = 'italic 18px serif';
-                ctx.fillText('SongWords', x, 490);
-                ctx.fillStyle = "white";
-                ctx.textAlign = "left";
-            });
+            // const canvas = canvasRef.current;
+            // let x = canvas.width / 2;
+            // const ctx = canvas.getContext('2d');
+            // const img = new Image();
+            // img.src = `https://textoverimage.moesif.com/image?image_url=${encodeURIComponent(data.response)}&overlay_color=0000007f&text=${data.completion}&text_size=${size}&y_align=middle&x_align=center`;
+            // img.addEventListener('load', () => {
+            //     ctx.drawImage(img, 0, 0);
+            //     ctx.font = 'italic 18px serif';
+            //     ctx.fillText('SongWords', x, 490);
+            //     ctx.fillStyle = "white";
+            //     ctx.textAlign = "left";
+            // });
         }
     }
 
-    // Using fetch
     async function downloadImage(imageSrc) {
-        var canvas = document.getElementById("canvas");
-  var url = canvas.toDataURL("image/png");
-  var link = document.createElement('a');
-  link.download = 'Quote songwords.png';
-  link.href = url;
-  link.click();
+        const image = await fetch(imageSrc)
+        const imageBlog = await image.blob()
+        const imageURL = URL.createObjectURL(imageBlog)
+      
+        const link = document.createElement('a')
+        link.href = imageURL
+        link.download = 'Songword Quote'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
     }
 
     return (
@@ -120,12 +123,12 @@ function HeroHome() {
                         <span class="sr-only">Loading...</span>
                     </div>
                     }
-                    {/* {generated &&  */}
+                    {generated && 
                     <div>
                         <div className="relative flex justify-center mb-8" data-aos="zoom-y-out" data-aos-delay="450">
                             <div className="flex flex-col justify-center">
-                                {/* <img loading='lazy' className="mx-auto" src={generated} alt="Hero" /> */}
-                                <canvas id='canvas' ref={canvasRef} width="512" height="512" />
+                                <img loading='lazy' className="mx-auto" src={generated} alt="Hero" />
+                                {/* <canvas id='canvas' ref={canvasRef} width="512" height="512" /> */}
                             </div>
                             <button
                                 // href={generated}
@@ -150,7 +153,7 @@ function HeroHome() {
                             </button>
                         </div>
                     </div>
-                    {/* // } */}
+                    }
                 </div>
             </div>
         </section>
