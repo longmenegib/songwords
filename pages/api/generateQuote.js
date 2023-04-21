@@ -6,7 +6,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-const imageListPrompt =[
+const imageListPrompt = [
     'the beauty of the natural world',
     'the feeling of love',
     'creativity and imagination',
@@ -24,20 +24,17 @@ function getRandomItem(arr) {
 }
 
 const handler = async (req, res) => {
+    res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, authorization"
+    );
+    //Preflight CORS handler
+    if (req.method === "OPTIONS") {
+        return res.status(200).json({
+            body: "OK",
+        });
+    }
     const requestMethod = req.method;
-    res.setHeader('Content-Type', 'application/json');
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'https://songwords.xyz');
-
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
 
     switch (requestMethod) {
         case 'POST':
@@ -53,7 +50,7 @@ const handler = async (req, res) => {
                     presence_penalty: 0,
                     stop: ["{}"],
                 });
-                
+
                 const response = await openai.createImage({
                     prompt: getRandomItem(imageListPrompt),
                     n: 1,
