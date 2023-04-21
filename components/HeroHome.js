@@ -17,8 +17,8 @@ function HeroHome() {
         setGenerated(null);
         setLoading(true);
         setImageLoaded(false)
-        const response = await axios.post("https://songwords.vercel.app/api/generateQuote", { title: title, artist: artist });
-        const data = await response.json();
+        const response = await axios.post("/api/generateQuote", {title: title, artist: artist});
+        const data = await response.data;
         if (data.success) {
             let size = 32;
             if (data.completion.length > 84) {
@@ -26,19 +26,6 @@ function HeroHome() {
             }
             setGenerated(`https://textoverimage.moesif.com/image?image_url=${encodeURIComponent(data.response)}&overlay_color=0000007f&text=${data.completion}&text_size=${size}&y_align=middle&x_align=center`);
             setLoading(false);
-
-            // const canvas = canvasRef.current;
-            // let x = canvas.width / 2;
-            // const ctx = canvas.getContext('2d');
-            // const img = new Image();
-            // img.src = `https://textoverimage.moesif.com/image?image_url=${encodeURIComponent(data.response)}&overlay_color=0000007f&text=${data.completion}&text_size=${size}&y_align=middle&x_align=center`;
-            // img.addEventListener('load', () => {
-            //     ctx.drawImage(img, 0, 0);
-            //     ctx.font = 'italic 18px serif';
-            //     ctx.fillText('SongWords', x, 490);
-            //     ctx.fillStyle = "white";
-            //     ctx.textAlign = "left";
-            // });
         }
     }
 

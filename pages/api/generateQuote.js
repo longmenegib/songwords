@@ -6,7 +6,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-const imageListPrompt = [
+const imageListPrompt =[
     'the beauty of the natural world',
     'the feeling of love',
     'creativity and imagination',
@@ -23,25 +23,29 @@ function getRandomItem(arr) {
     return item;
 }
 
-export const config = {
-    api: {
-      bodyParser: false,
-    },
-  };
-
 const handler = async (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type'); // If needed
-    res.setHeader('Access-Control-Allow-Credentials', true); 
-    //Preflight CORS handler
+   
+    res.setHeader('Content-Type', 'application/json');
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    // res.setHeader('Access-Control-Allow-Credentials', false);
+
     if (req.method === "OPTIONS") {
         return res.status(200).json({
-            body: "OK",
+          body: "OK",
         });
-    }
-    const requestMethod = req.method;
+      }
 
+    const requestMethod = req.method;
     switch (requestMethod) {
         case 'POST':
             if (req.body.title !== undefined && req.body.artist !== undefined) {
@@ -56,7 +60,7 @@ const handler = async (req, res) => {
                     presence_penalty: 0,
                     stop: ["{}"],
                 });
-
+                
                 const response = await openai.createImage({
                     prompt: getRandomItem(imageListPrompt),
                     n: 1,
