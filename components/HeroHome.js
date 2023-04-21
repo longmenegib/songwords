@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 function HeroHome() {
 
@@ -7,12 +8,14 @@ function HeroHome() {
     const [loading, setLoading] = useState(false);
     const [artist, setArtist] = useState("");
     const [title, setTitle] = useState("");
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     const canvasRef = useRef(null);
 
     const generation = async () => {
         setGenerated(null);
         setLoading(true);
+        setImageLoaded(false)
         const response = await fetch("/api/generateQuote", {
             method: "POST",
             headers: {
@@ -48,7 +51,7 @@ function HeroHome() {
         const image = await fetch(imageSrc)
         const imageBlog = await image.blob()
         const imageURL = URL.createObjectURL(imageBlog)
-      
+
         const link = document.createElement('a')
         link.href = imageURL
         link.download = 'Songword Quote'
@@ -123,36 +126,38 @@ function HeroHome() {
                         <span class="sr-only">Loading...</span>
                     </div>
                     }
-                    {generated && 
-                    <div>
-                        <div className="relative flex justify-center mb-8" data-aos="zoom-y-out" data-aos-delay="450">
-                            <div className="flex flex-col justify-center">
-                                <img loading='lazy' className="mx-auto" src={generated} alt="Hero" />
-                                {/* <canvas id='canvas' ref={canvasRef} width="512" height="512" /> */}
-                            </div>
-                            <button
-                                // href={generated}
-                                className="absolute top-full flex items-center transform -translate-y-1/2 bg-white rounded-full font-medium group p-2 shadow-lg"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    downloadImage(generated);
-                                }}
-                                // download={'quote.png'}
-                                aria-controls="modal"
-                            >
-                                <svg
-                                    className="w-6 h-6 fill-current text-gray-400 group-hover:text-blue-600 flex-shrink-0"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
+                    {generated &&
+                        <div>
+                            <div className="relative flex justify-center mb-8" data-aos="zoom-y-out" data-aos-delay="450">
+                                <div className="flex flex-col justify-center">
+                                    <img className={`smooth-image image-${imageLoaded ? 'visible' : 'hidden'}`} src={generated} alt="Hero" onLoad={() => setImageLoaded(true)} />
+                                {!imageLoaded && <div class="animate-pulse flex space-x-4">
+                                        <div class="rounded-2 bg-slate-200" style={{width: 512, height: 512}}></div>
+                                    </div>}
+                                </div>
+                                <button
+                                    // href={generated}
+                                    className="absolute top-full flex items-center transform -translate-y-1/2 bg-white rounded-full font-medium group p-2 shadow-lg"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        downloadImage(generated);
+                                    }}
+                                    // download={'quote.png'}
+                                    aria-controls="modal"
                                 >
-                                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm0 2C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12z" />
-                                    <path d="M10 17l6-5-6-5z" />
-                                </svg>
-                                <span className="ml-3 text-indigo-900">Download</span>
-                            </button>
+                                    <svg
+                                        className="w-6 h-6 fill-current text-gray-400 group-hover:text-blue-600 flex-shrink-0"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm0 2C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12z" />
+                                        <path d="M10 17l6-5-6-5z" />
+                                    </svg>
+                                    <span className="ml-3 text-indigo-900">Download</span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
                     }
                 </div>
             </div>
