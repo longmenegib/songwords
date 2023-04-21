@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
@@ -16,13 +17,7 @@ function HeroHome() {
         setGenerated(null);
         setLoading(true);
         setImageLoaded(false)
-        const response = await fetch("/api/generateQuote", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ title: title, artist: artist }),
-        });
+        const response = await axios.post("https://songwords.vercel.app/api/generateQuote", JSON.stringify({ title: title, artist: artist }), {withCredentials: true, headers: {"Content-Type": "application/json"}});
         const data = await response.json();
         if (data.success) {
             let size = 32;
@@ -64,7 +59,7 @@ function HeroHome() {
         <section className="relative">
             {/* Illustration behind hero content */}
             <div className="absolute left-1/2 transform -translate-x-1/2 top-0 pointer-events-none z-10" aria-hidden="true">
-                <svg width="100vw" height="100vh" xmlns="http://www.w3.org/2000/svg">
+                <svg width="100vw" height="90vh" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="illustration-01">
                             <stop stopColor="#bbb" offset="0%" />
