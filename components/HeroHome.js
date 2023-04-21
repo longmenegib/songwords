@@ -17,7 +17,7 @@ function HeroHome() {
         setGenerated(null);
         setLoading(true);
         setImageLoaded(false)
-        const response = await axios.post("/api/generateQuote", {title: title, artist: artist});
+        const response = await axios.post("https://songwords.vercel.app/api/generateQuote", {title: title, artist: artist});
         const data = await response.data;
         if (data.success) {
             let size = 32;
