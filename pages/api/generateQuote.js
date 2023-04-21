@@ -23,6 +23,12 @@ function getRandomItem(arr) {
     return item;
 }
 
+export const config = {
+    api: {
+      bodyParser: false,
+    },
+  };
+
 const handler = async (req, res) => {
     res.setHeader(
         "Access-Control-Allow-Headers",
